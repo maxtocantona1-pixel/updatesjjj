@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>eFootball Player Cards</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+:root{
+  --neon:#11ff66; 
+  --gold:#d4af37; 
+  --card:#0a0f14; 
+  --frame:#6f5530; 
+  --text:#ffffff;
+}
+*{box-sizing:border-box}
+body{
+  margin:10px;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
+  background:#000;
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  padding:10px;
+  
+}
+  .up {
+    position: relative;
+    top: 100px;
+  }
+h1{font-weight:800;font-size:clamp(20px,3vw,26px);margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}  /* Epic Card Styling */
+.epic-card {
+position: relative;
+aspect-ratio: 2/3;
+border-radius: 16px;
+overflow: hidden;
+background: linear-gradient(145deg, #1b1b1b, #111);
+box-shadow: 0 0 20px rgba(255, 255, 255, 0.2),
+inset 0 0 0 2px #d4af37,
+inset 0 0 20px rgba(212, 175, 55, 0.2);
+transition: transform 0.5s ease, box-shadow 0.5s ease;
+  top: 100px;
+}
+.epic-card { box-shadow: 0 0 40px #11ff66, 0 0 20px #d4af37 inset; }
+.epic-card:hover { transform: scale(1.0) ; box-shadow: 0 0 40px #11ff66, 0 0 20px #d4af37 inset; }
+
+  .epic-card .card-bg { position:absolute; inset:0; z-index:0; background:url('epic.jpg') center/cover no-repeat; filter: brightness(99); transition: filter 0.5s ease; }
+.epic-card .photo { position:absolute; inset:0; z-index:1; display:flex; align-items:end; justify-content:center; padding-bottom:10px; gap:6px; }
+.epic-card .photo img { width:90%; object-fit:contain; filter:brightness(1) contrast(1.1) saturate(1.2) drop-shadow(0 6px 12px rgba(0,0,0,.5)); transition:transform 0.5s ease; }
+.epic-card .photo img:hover { transform: scale(1.05); }
+.epic-card .badge { position:absolute; left:10px; top:20px; z-index:2; color:#d4af37; text-shadow:0 2px 8px rgba(0,0,0,.7); display:flex; flex-direction:column; align-items:flex-start; gap:4px; }
+.epic-card .rating{ font-weight:900; font-size:42px; }
+.epic-card .pos{ font-weight:800; font-size:26px; color: white; }
+.epic-card .team img{ width:40px; height:40px; object-fit:contain; border-radius:40%; box-shadow:0 0 6px rgba(0,0,0,0.6); background:transparent; }
+.epic-card .name{ position:absolute; left:8px; right:8px; bottom:60px; z-index:2; text-align:center; font-weight:800; font-size:24px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.9); }
+ skills{ position:relative; margin: -30px; left:6px; right:6px; top:1px; z-index:3; display:flex; gap:8px; justify-content: space-between;  }
+.skill{ flex:1; background:linear-gradient(180deg,#cfa64b,#7c6433); color:#fff; padding:4px 6px; border-radius:60px; text-align:center; font-weight:800; font-size:11px; box-shadow:0 2px 6px rgba(0,0,0,.4); }
+@keyframes epicGlow { 0%{box-shadow:0 0 30px 4px #11ff66;} 50%{box-shadow:0 0 30px 8px #11ff66;} 100%{box-shadow:0 0 30px 12px #11ff66;} }
+.epic-card.epic { animation: epicGlow 2s infinite alternate; }
+
+button{ background:#0c281b;color:#c8ffdd;border:1px solid #1f7a4b;padding:8px 12px;border-radius:8px;cursor:pointer;}
+button:hover{filter:brightness(1.2);}
+
+/* Edit Mode Styles */
+.edit-modal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.8);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+}
+
+.edit-form {
+background: #1a1a1a;
+padding: 20px;
+border-radius: 10px;
+width: 90%;
+max-width: 500px;
+max-height: 90vh;
+overflow-y: auto;
+border: 2px solid var(--gold);
+}
+
+.edit-form h2 {
+color: var(--gold);
+margin-top: 0;
+text-align: center;
+}
+
+.form-group {
+margin-bottom: 15px;
+}
+
+.form-group label {
+display: block;
+margin-bottom: 5px;
+color: #ccc;
+}
+
+.form-group input,
+.form-group select {
+width: 100%;
+padding: 8px;
+border-radius: 5px;
+border: 1px solid #444;
+background: #333;
+color: white;
+}
+
+.skills-input {
+display: flex;
+gap: 10px;
+}
+
+.skills-input input {
+flex: 1;
+}
+
+.skills-list {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin-top: 10px;
+}
+
+.skill-tag {
+background: var(--gold);
+color: black;
+padding: 4px 8px;
+border-radius: 20px;
+font-size: 12px;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.skill-tag button {
+background: none;
+border: none;
+color: #000;
+cursor: pointer;
+font-weight: bold;
+padding: 0;
+width: 16px;
+height: 16px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.form-buttons {
+display: flex;
+justify-content: space-between;
+margin-top: 20px;
+}
+
+.player-list {
+margin-top: 20px;
+max-height: 300px;
+overflow-y: auto;
+}
+
+.player-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px;
+border-bottom: 1px solid #333;
+cursor: pointer;
+}
+
+.player-item:hover {
+background: #222;
+}
+
+.player-item .actions {
+display: flex;
+gap: 10px;
+}
+
+.player-item button {
+padding: 5px 10px;
+font-size: 12px;
+}
+
+/* Image upload preview */
+.image-upload {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-top: 10px;
+}
+
+.image-preview {
+width: 100px;
+height: 100px;
+border: 1px solid #444;
+border-radius: 5px;
+overflow: hidden;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.image-preview img {
+max-width: 100%;
+max-height: 100%;
+object-fit: contain;
+}
+
+.upload-btn {
+background: #333;
+color: white;
+padding: 6px 12px;
+border-radius: 4px;
+cursor: pointer;
+text-align: center;
+border: 1px solid #555;
+}
+
+.upload-btn:hover {
+background: #444;
+}
+
+input[type="file"] {
+display: none;
+}
+</style>
+
+</head>
+<body>
+<header style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
+<h1>Manchester United</h1>
+<div style="display:flex; gap:8px; flex-wrap:wrap">
+  <button class="up" id="shareBtn">About</button>
+  <button class="up" onclick="resetGame()">Reset</button>
+  <button class="up"onclick="openEditMode()">Add/Edit Player</button>
+</div>
+</header>
+<div id="playersLeft"></div>
+<div class="grid" id="cards"></div>
+<script src="cards.js"></script>
+  <script src="addplayer.js"></script>
+
+</body>
+<script>
+document.getElementById('shareBtn').addEventListener('click', async () => {
+    location.href = "share.html";
+});
+</script>
+</html>
