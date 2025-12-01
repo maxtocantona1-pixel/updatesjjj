@@ -159,6 +159,7 @@ function makeCard(p){
     </div>
     <div class="photo"><img src="${photoSrc}" style="${bgStyle}" alt="${p.name}" onerror="this.src='unin.jpg'"></div>
     <div style="${bgStyle}" class="name">${p.name}</div>
+  <div class="hos"> <img src="hos.png"></img></div>
   `;
   
   // Add click event to the card
@@ -203,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function resetGame(){
-  let confirms3 = confirm("Reset all data. Players created and reseting default settings?");
+  let confirms3 = confirm("Reset all data? Coins and history will be cleared!");
   if(confirms3){
     localStorage.clear(); 
     sessionStorage.clear();

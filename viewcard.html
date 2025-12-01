@@ -23,7 +23,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  overflow:hidden;
+  overflow: visible;
 }
 
 /* Back Button */
@@ -47,6 +47,89 @@ body{
   transform: scale(1.05);
 }
 
+/* Change Position Button */
+.change-position-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background:#0c281b;
+  color:#c8ffdd;
+  border:1px solid #1f7a4b;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
+  z-index:10;
+  transition: all 0.3s ease;
+}
+
+.change-position-btn:hover {
+  filter:brightness(1.2);
+  transform: scale(1.05);
+}
+
+.change-position-btn.active {
+  background:#1f7a4b;
+  border-color:#11ff66;
+  box-shadow:0 0 10px #11ff66;
+}
+
+/* Save Button */
+.save-btn {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  background:#0c281b;
+  color:#c8ffdd;
+  border:1px solid #1f7a4b;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
+  z-index:10;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.save-btn:hover {
+  filter:brightness(1.2);
+  transform: scale(1.05);
+}
+
+.save-btn.active {
+  opacity: 1;
+  background:#1f7a4b;
+  border-color:#11ff66;
+}
+
+/* Reset Position Button */
+.reset-btn {
+  position: absolute;
+  top: 120px;
+  right: 20px;
+  background:#0c281b;
+  color:#c8ffdd;
+  border:1px solid #1f7a4b;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
+  z-index:10;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.reset-btn:hover {
+  filter:brightness(1.2);
+  transform: scale(1.05);
+}
+
+.reset-btn.active {
+  opacity: 1;
+  background:#1f7a4b;
+  border-color:#11ff66;
+}
+
 /* Card Container */
 .card-container {
   display: flex;
@@ -62,8 +145,9 @@ body{
   position: relative;
   width: 500px;
   height: 700px;
+  transition: 1s;
   border-radius: 24px;
-  overflow: hidden;
+  overflow: visible;
   background: linear-gradient(145deg, #1b1b1b, #111);
   box-shadow: 0 0 40px rgba(255, 255, 255, 0.3),
               inset 0 0 0 3px #d4af37,
@@ -84,8 +168,7 @@ body{
 
 .epic-card .photo { 
   position:absolute; 
-  inset:0; 
-  z-index:1; 
+  inset:0;  
   display:flex; 
   align-items:end; 
   justify-content:center; 
@@ -98,15 +181,27 @@ body{
   height: auto;
   object-fit:contain; 
   position: absolute;
+  z-index:1; 
+  transition: all 0.3s ease;
   
   filter:brightness(1) contrast(1.1) saturate(1.2) drop-shadow(0 6px 12px rgba(0,0,0,.5)); 
 }
+
+.epic-card .photo img.drag-enabled  {
+  cursor: move;
+  user-select: none;
+  touch-action: none;
+  border: 2px dashed #11ff66;
+  box-shadow: 0 0 15px #11ff66;
+  z-index: 3;
+}
+  
 
 .epic-card .badge { 
   position:absolute; 
   left:20px; 
   top:30px; 
-  z-index:2; 
+  z-index:4; 
   color:#d4af37; 
   text-shadow:0 2px 8px rgba(0,0,0,.7); 
   display:flex; 
@@ -130,8 +225,7 @@ body{
   width:50px; 
   height:50px; 
   object-fit:contain; 
-  border-radius:50%; 
-  box-shadow:0 0 8px rgba(0,0,0,0.6); 
+  border-radius:20%; 
   background:transparent; 
 }
 
@@ -139,20 +233,26 @@ body{
   position:absolute; 
   left:10px; 
   right:10px; 
-  bottom:80px; 
-  z-index:2; 
+  bottom:100px; 
+  z-index:4; 
   text-align:center; 
   font-weight:800; 
   font-size:32px; 
   color:#fff; 
   text-shadow:0 2px 8px rgba(0,0,0,.9); 
 }
-
-.epic-card .skills{ 
+.epic-card .hos{ 
   position:absolute; 
-  left:10px; 
+  left:-340px; 
+ transform: scale(0.4);
+  top:-480px; 
+  z-index:2; 
+}
+.epic-card .skills{ 
+  position: relative; 
+  left: 0px; 
   right:10px; 
-  top:0px; 
+  top:-50px; 
   z-index:3; 
   display:flex; 
   gap:10px; 
@@ -168,17 +268,37 @@ body{
   text-align:center; 
   font-weight:800; 
   font-size:14px; 
-  box-shadow:0 2px 6px rgba(0,0,0,.4); 
+  box-shadow:0 2px 60px rgba(0,0,0,.4); 
 }
 
 .hide {
   display: none !important;
 }
 
+/* Position indicator */
+.position-indicator {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--neon);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 100;
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+
+.position-indicator.show {
+  opacity: 1;
+}
+
 @keyframes epicGlow { 
-  0%{box-shadow:0 0 40px 6px #11ff66;} 
-  50%{box-shadow:0 0 40px 22px #11ff66;} 
-  100%{box-shadow:0 0 40px 28px #11ff66;} 
+  0%{box-shadow:0 0 50px 2px #11ff66;} 
+  50%{box-shadow:0 0 50px 6px #11ff66;} 
+  100%{box-shadow:0 0 50px 18px #11ff66;} 
 }
 
 /* Responsive adjustments */
@@ -201,7 +321,7 @@ body{
   }
   
   .epic-card .name{ 
-    font-size:26px; 
+    font-size:30px; 
   }
   
   .skill{ 
@@ -223,7 +343,11 @@ body{
 </head>
 <body>
 <button class="back-btn" onclick="goBack()">← Back</button>
+<button class="change-position-btn" id="changePositionBtn">Change Position</button>
+<button class="save-btn" id="saveBtn">Save Position</button>
+<button class="reset-btn" id="resetBtn">Reset Position</button>
 <div class="card-container" id="cardContainer"></div>
+<div class="position-indicator" id="positionIndicator">Position saved!</div>
 
 <script>
 // Function to go back to main page
@@ -278,6 +402,214 @@ function getImageFromLocalStorage(imageKey) {
     return imageKey;
 }
 
+// Drag and drop functionality
+let isDragging = false;
+let dragEnabled = false;
+let startX, startY;
+let initialX, initialY;
+let currentX = 0;
+let currentY = 0;
+let playerImg = null;
+let currentPlayerId = null;
+const positionIndicator = document.getElementById('positionIndicator');
+const changePositionBtn = document.getElementById('changePositionBtn');
+const saveBtn = document.getElementById('saveBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+function toggleDragMode() {
+    dragEnabled = !dragEnabled;
+    
+    if (dragEnabled) {
+        // Enable drag mode
+        changePositionBtn.classList.add('active');
+        changePositionBtn.textContent = 'Drag Enabled';
+        saveBtn.classList.add('active');
+        resetBtn.classList.add('active');
+        
+        if (playerImg) {
+            playerImg.classList.add('drag-enabled');
+        }
+    } else {
+        // Disable drag mode
+        changePositionBtn.classList.remove('active');
+        changePositionBtn.textContent = 'Change Position';
+        saveBtn.classList.remove('active');
+        resetBtn.classList.remove('active');
+        
+        if (playerImg) {
+            playerImg.classList.remove('drag-enabled');
+        }
+    }
+}
+
+function startDrag(e) {
+    if (!dragEnabled) return;
+    
+    e.preventDefault();
+    isDragging = true;
+    
+    // Get initial touch/mouse position
+    if (e.type.includes('touch')) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+    } else {
+        startX = e.clientX;
+        startY = e.clientY;
+    }
+    
+    // Get current image position
+    const transform = window.getComputedStyle(playerImg).transform;
+    if (transform !== 'none') {
+        const matrix = transform.split(',');
+        currentX = parseInt(matrix[4]) || 0;
+        currentY = parseInt(matrix[5]) || 0;
+    }
+    
+    initialX = currentX;
+    initialY = currentY;
+    
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag, { passive: false });
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('touchend', stopDrag);
+}
+
+function drag(e) {
+    if (!isDragging || !dragEnabled) return;
+    e.preventDefault();
+    
+    let clientX, clientY;
+    if (e.type.includes('touch')) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+    } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+    
+    // Calculate new position
+    const deltaX = clientX - startX;
+    const deltaY = clientY - startY;
+    
+    currentX = initialX + deltaX;
+    currentY = initialY + deltaY;
+    
+    // Apply transformation only to the player image
+    playerImg.style.transform = `translate(${currentX}px, ${currentY}px)`;
+}
+
+function stopDrag() {
+    isDragging = false;
+    
+    // Remove event listeners
+    document.removeEventListener('mousemove', drag);
+    document.removeEventListener('touchmove', drag);
+    document.removeEventListener('mouseup', stopDrag);
+    document.removeEventListener('touchend', stopDrag);
+}
+
+function savePosition() {
+    if (!dragEnabled) {
+        // Show message that drag mode needs to be enabled
+        positionIndicator.textContent = "Enable 'Change Position' first!";
+        positionIndicator.style.color = "#ff4444";
+        positionIndicator.classList.add('show');
+        setTimeout(() => {
+            positionIndicator.classList.remove('show');
+            positionIndicator.textContent = "Position saved!";
+            positionIndicator.style.color = "#11ff66";
+        }, 2000);
+        return;
+    }
+    
+    // Save position to localStorage with player-specific key
+    const positionData = {
+        x: currentX,
+        y: currentY,
+        timestamp: Date.now()
+    };
+    
+    // Use player ID to create a unique key for each player's position
+    const positionKey = `playerImagePosition_${currentPlayerId}`;
+    localStorage.setItem(positionKey, JSON.stringify(positionData));
+    
+    // Show position saved indicator
+    positionIndicator.textContent = "Position saved for this player!";
+    positionIndicator.style.color = "#11ff66";
+    positionIndicator.classList.add('show');
+    setTimeout(() => {
+        positionIndicator.classList.remove('show');
+    }, 2000);
+    
+    // Auto-disable drag mode after saving
+    toggleDragMode();
+}
+
+function resetPosition() {
+    if (!dragEnabled) {
+        positionIndicator.textContent = "Enable 'Change Position' first!";
+        positionIndicator.style.color = "#ff4444";
+        positionIndicator.classList.add('show');
+        setTimeout(() => {
+            positionIndicator.classList.remove('show');
+        }, 2000);
+        return;
+    }
+    
+    // Reset to default position
+    currentX = 0;
+    currentY = 0;
+    
+    if (playerImg) {
+        playerImg.style.transform = `translate(${currentX}px, ${currentY}px)`;
+    }
+    
+    // Remove saved position for this player
+    const positionKey = `playerImagePosition_${currentPlayerId}`;
+    localStorage.removeItem(positionKey);
+    
+    positionIndicator.textContent = "Position reset to default!";
+    positionIndicator.style.color = "#11ff66";
+    positionIndicator.classList.add('show');
+    setTimeout(() => {
+        positionIndicator.classList.remove('show');
+    }, 2000);
+}
+
+function loadPosition() {
+    // Use player ID to get the specific position for this player
+    const positionKey = `playerImagePosition_${currentPlayerId}`;
+    const savedPosition = localStorage.getItem(positionKey);
+    
+    if (savedPosition) {
+        try {
+            const positionData = JSON.parse(savedPosition);
+            currentX = positionData.x || 0;
+            currentY = positionData.y || 0;
+            
+            // Apply saved position to player image
+            if (playerImg) {
+                playerImg.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            }
+        } catch (e) {
+            console.error('Error loading saved position:', e);
+        }
+    } else {
+        // No saved position for this player, reset to default
+        currentX = 0;
+        currentY = 0;
+        if (playerImg) {
+            playerImg.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        }
+    }
+}
+
+// Function to generate a unique ID for a player
+function generatePlayerId(player) {
+    // Create a unique ID based on player data
+    return btoa(`${player.name}_${player.position}_${player.overall}`).replace(/=/g, '');
+}
+
 // Function to load and display player card
 function loadPlayerCard() {
     const playerData = sessionStorage.getItem('playerView');
@@ -289,6 +621,9 @@ function loadPlayerCard() {
     }
     
     const player = JSON.parse(playerData);
+    
+    // Generate a unique ID for this player
+    currentPlayerId = generatePlayerId(player);
     
     // Fix image paths
     const fixedPhoto = fixImagePath(player.photo);
@@ -323,16 +658,35 @@ function loadPlayerCard() {
             </div>
             <div class="photo">
                 <img src="${photoSrc}" alt="${player.name}" onerror="this.src='unin.jpg'">
+           
             </div>
             <div class="name">${player.name}</div>
+  <div class="hos"> <img src="hos.png"></img> </div>
         </div>
     `;
     
     cardContainer.innerHTML = cardHTML;
+    
+    // Add drag and drop event listeners after card is created
+    setTimeout(() => {
+        playerImg = document.querySelector('.epic-card .photo img');
+        if (playerImg) {
+            playerImg.addEventListener('mousedown', startDrag);
+            playerImg.addEventListener('touchstart', startDrag, { passive: false });
+            
+            // Load saved position for this specific player
+            loadPosition();
+        }
+    }, 100);
 }
 
 // Load the player card when page loads
 document.addEventListener('DOMContentLoaded', loadPlayerCard);
+
+// Add event listeners for buttons
+changePositionBtn.addEventListener('click', toggleDragMode);
+saveBtn.addEventListener('click', savePosition);
+resetBtn.addEventListener('click', resetPosition);
 
 // Add keyboard support for going back
 document.addEventListener('keydown', function(event) {
