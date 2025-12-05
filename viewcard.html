@@ -213,12 +213,21 @@ body{
 .epic-card .rating{ 
   font-weight:900; 
   font-size:60px; 
+  transform: scale(1.2);
+  position: absolute;
+  top: -20px;
+  animation: glow 3s infinite alternate;
 }
 
 .epic-card .pos{ 
   font-weight:800; 
   font-size:32px; 
   color: white; 
+  position: absolute;
+  top: 40px;
+  left: 6px;
+
+  scale: 1.4;
 }
 
 .epic-card .team img{ 
@@ -227,6 +236,10 @@ body{
   object-fit:contain; 
   border-radius:20%; 
   background:transparent; 
+  position: absolute;
+  top: 80px;
+  left: 5px;
+  scale: 1.2;
 }
 
 .epic-card .name{ 
@@ -238,6 +251,7 @@ body{
   text-align:center; 
   font-weight:800; 
   font-size:32px; 
+  scale: 1.4;
   color:#fff; 
   text-shadow:0 2px 8px rgba(0,0,0,.9); 
 }
@@ -339,6 +353,11 @@ body{
     height: 490px;
   }
 }
+  @keyframes glow{
+    from{color: white;}
+    to{color: #d4af37;}
+    
+  }
 </style>
 </head>
 <body>
