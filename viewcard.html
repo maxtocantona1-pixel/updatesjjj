@@ -74,6 +74,33 @@ body{
   box-shadow:0 0 10px #11ff66;
 }
 
+/* Scale Image Button */
+.scale-image-btn {
+  position: absolute;
+  top: 20px;
+  right: 180px;
+  background:#0c281b;
+  color:#c8ffdd;
+  border:1px solid #1f7a4b;
+  padding:10px 15px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
+  z-index:10;
+  transition: all 0.3s ease;
+}
+
+.scale-image-btn:hover {
+  filter:brightness(1.2);
+  transform: scale(1.05);
+}
+
+.scale-image-btn.active {
+  background:#1f7a4b;
+  border-color:#11ff66;
+  box-shadow:0 0 10px #11ff66;
+}
+
 /* Save Button */
 .save-btn {
   position: absolute;
@@ -130,6 +157,71 @@ body{
   border-color:#11ff66;
 }
 
+/* Scale Controls */
+.scale-controls {
+  position: absolute;
+  top: 170px;
+  right: 20px;
+  background: rgba(12, 40, 27, 0.9);
+  border: 1px solid #1f7a4b;
+  padding: 15px;
+  border-radius: 8px;
+  z-index: 10;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 150px;
+}
+
+.scale-controls.active {
+  display: flex;
+}
+
+.scale-controls label {
+  color: #c8ffdd;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scale-controls input[type="range"] {
+  width: 100%;
+  margin: 5px 0;
+  -webkit-appearance: none;
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  outline: none;
+}
+
+.scale-controls input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #11ff66;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.scale-controls input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #11ff66;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.scale-value {
+  color: #11ff66;
+  font-weight: bold;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
 /* Card Container */
 .card-container {
   display: flex;
@@ -145,7 +237,7 @@ body{
   position: relative;
   width: 500px;
   height: 700px;
-  transition: 1s;
+  transition: 0.3s;
   border-radius: 24px;
   overflow: visible;
   background: linear-gradient(145deg, #1b1b1b, #111);
@@ -183,7 +275,7 @@ body{
   position: absolute;
   z-index:1; 
   transition: all 0.3s ease;
-  
+  transform-origin: center center;
   filter:brightness(1) contrast(1.1) saturate(1.2) drop-shadow(0 6px 12px rgba(0,0,0,.5)); 
 }
 
@@ -195,7 +287,13 @@ body{
   box-shadow: 0 0 15px #11ff66;
   z-index: 3;
 }
-  
+
+.epic-card .photo img.scale-enabled  {
+  cursor: default;
+  border: 2px dashed #ffaa11;
+  box-shadow: 0 0 15px #ffaa11;
+  z-index: 3;
+}
 
 .epic-card .badge { 
   position:absolute; 
@@ -226,7 +324,6 @@ body{
   position: absolute;
   top: 40px;
   left: 6px;
-
   scale: 1.4;
 }
 
@@ -326,6 +423,10 @@ body{
     height: 560px;
   }
   
+  .scale-image-btn {
+    right: 140px;
+  }
+  
   .epic-card .rating{ 
     font-size:48px; 
   }
@@ -352,6 +453,15 @@ body{
     width: 350px;
     height: 490px;
   }
+  
+  .scale-image-btn {
+    right: 120px;
+  }
+  
+  .scale-controls {
+    right: 10px;
+    min-width: 130px;
+  }
 }
   @keyframes glow{
     from{color: white;}
@@ -363,8 +473,16 @@ body{
 <body>
 <button class="back-btn" onclick="goBack()">← Back</button>
 <button class="change-position-btn" id="changePositionBtn">Change Position</button>
+<button class="scale-image-btn" id="scaleImageBtn">Scale Image</button>
 <button class="save-btn" id="saveBtn">Save Position</button>
 <button class="reset-btn" id="resetBtn">Reset Position</button>
+
+<div class="scale-controls" id="scaleControls">
+  <label for="scaleSlider">Scale: <span id="scaleValue">100%</span></label>
+  <input type="range" id="scaleSlider" min="50" max="200" value="100" step="1">
+  <div class="scale-value" id="scalePercent">100%</div>
+</div>
+
 <div class="card-container" id="cardContainer"></div>
 <div class="position-indicator" id="positionIndicator">Position saved!</div>
 
@@ -424,29 +542,41 @@ function getImageFromLocalStorage(imageKey) {
 // Drag and drop functionality
 let isDragging = false;
 let dragEnabled = false;
+let scaleEnabled = false;
 let startX, startY;
 let initialX, initialY;
 let currentX = 0;
 let currentY = 0;
+let currentScale = 1;
 let playerImg = null;
 let currentPlayerId = null;
+let scaleSlider = null;
+let scalePercent = null;
+let scaleValue = null;
+
 const positionIndicator = document.getElementById('positionIndicator');
 const changePositionBtn = document.getElementById('changePositionBtn');
+const scaleImageBtn = document.getElementById('scaleImageBtn');
+const scaleControls = document.getElementById('scaleControls');
 const saveBtn = document.getElementById('saveBtn');
 const resetBtn = document.getElementById('resetBtn');
 
 function toggleDragMode() {
+    scaleEnabled = false;
     dragEnabled = !dragEnabled;
     
     if (dragEnabled) {
         // Enable drag mode
         changePositionBtn.classList.add('active');
         changePositionBtn.textContent = 'Drag Enabled';
+        scaleImageBtn.classList.remove('active');
+        scaleControls.classList.remove('active');
         saveBtn.classList.add('active');
         resetBtn.classList.add('active');
         
         if (playerImg) {
             playerImg.classList.add('drag-enabled');
+            playerImg.classList.remove('scale-enabled');
         }
     } else {
         // Disable drag mode
@@ -457,6 +587,43 @@ function toggleDragMode() {
         
         if (playerImg) {
             playerImg.classList.remove('drag-enabled');
+        }
+    }
+}
+
+function toggleScaleMode() {
+    dragEnabled = false;
+    scaleEnabled = !scaleEnabled;
+    
+    if (scaleEnabled) {
+        // Enable scale mode
+        scaleImageBtn.classList.add('active');
+        scaleImageBtn.textContent = 'Scale Enabled';
+        changePositionBtn.classList.remove('active');
+        scaleControls.classList.add('active');
+        saveBtn.classList.add('active');
+        resetBtn.classList.add('active');
+        
+        if (playerImg) {
+            playerImg.classList.add('scale-enabled');
+            playerImg.classList.remove('drag-enabled');
+        }
+        
+        // Update slider to current scale
+        if (scaleSlider) {
+            scaleSlider.value = Math.round(currentScale * 100);
+            updateScaleDisplay();
+        }
+    } else {
+        // Disable scale mode
+        scaleImageBtn.classList.remove('active');
+        scaleImageBtn.textContent = 'Scale Image';
+        scaleControls.classList.remove('active');
+        saveBtn.classList.remove('active');
+        resetBtn.classList.remove('active');
+        
+        if (playerImg) {
+            playerImg.classList.remove('scale-enabled');
         }
     }
 }
@@ -513,8 +680,8 @@ function drag(e) {
     currentX = initialX + deltaX;
     currentY = initialY + deltaY;
     
-    // Apply transformation only to the player image
-    playerImg.style.transform = `translate(${currentX}px, ${currentY}px)`;
+    // Apply transformation to the player image
+    playerImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
 }
 
 function stopDrag() {
@@ -527,10 +694,31 @@ function stopDrag() {
     document.removeEventListener('touchend', stopDrag);
 }
 
+function updateScale() {
+    if (!scaleSlider) return;
+    
+    currentScale = scaleSlider.value / 100;
+    updateScaleDisplay();
+    
+    // Apply transformation to the player image
+    if (playerImg) {
+        playerImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
+    }
+}
+
+function updateScaleDisplay() {
+    if (scaleValue) {
+        scaleValue.textContent = `${Math.round(currentScale * 100)}%`;
+    }
+    if (scalePercent) {
+        scalePercent.textContent = `${Math.round(currentScale * 100)}%`;
+    }
+}
+
 function savePosition() {
-    if (!dragEnabled) {
-        // Show message that drag mode needs to be enabled
-        positionIndicator.textContent = "Enable 'Change Position' first!";
+    // Check if any mode is active
+    if (!dragEnabled && !scaleEnabled) {
+        positionIndicator.textContent = "Enable 'Change Position' or 'Scale Image' first!";
         positionIndicator.style.color = "#ff4444";
         positionIndicator.classList.add('show');
         setTimeout(() => {
@@ -541,10 +729,11 @@ function savePosition() {
         return;
     }
     
-    // Save position to localStorage with player-specific key
+    // Save position and scale to localStorage with player-specific key
     const positionData = {
         x: currentX,
         y: currentY,
+        scale: currentScale,
         timestamp: Date.now()
     };
     
@@ -553,20 +742,22 @@ function savePosition() {
     localStorage.setItem(positionKey, JSON.stringify(positionData));
     
     // Show position saved indicator
-    positionIndicator.textContent = "Position saved for this player!";
+    positionIndicator.textContent = "Position & scale saved for this player!";
     positionIndicator.style.color = "#11ff66";
     positionIndicator.classList.add('show');
     setTimeout(() => {
         positionIndicator.classList.remove('show');
     }, 2000);
     
-    // Auto-disable drag mode after saving
-    toggleDragMode();
+    // Auto-disable active modes after saving
+    if (dragEnabled) toggleDragMode();
+    if (scaleEnabled) toggleScaleMode();
 }
 
 function resetPosition() {
-    if (!dragEnabled) {
-        positionIndicator.textContent = "Enable 'Change Position' first!";
+    // Check if any mode is active
+    if (!dragEnabled && !scaleEnabled) {
+        positionIndicator.textContent = "Enable 'Change Position' or 'Scale Image' first!";
         positionIndicator.style.color = "#ff4444";
         positionIndicator.classList.add('show');
         setTimeout(() => {
@@ -575,19 +766,26 @@ function resetPosition() {
         return;
     }
     
-    // Reset to default position
+    // Reset to default position and scale
     currentX = 0;
     currentY = 0;
+    currentScale = 1;
     
     if (playerImg) {
-        playerImg.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        playerImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
+    }
+    
+    // Update scale slider if available
+    if (scaleSlider) {
+        scaleSlider.value = 100;
+        updateScaleDisplay();
     }
     
     // Remove saved position for this player
     const positionKey = `playerImagePosition_${currentPlayerId}`;
     localStorage.removeItem(positionKey);
     
-    positionIndicator.textContent = "Position reset to default!";
+    positionIndicator.textContent = "Position & scale reset to default!";
     positionIndicator.style.color = "#11ff66";
     positionIndicator.classList.add('show');
     setTimeout(() => {
@@ -605,10 +803,17 @@ function loadPosition() {
             const positionData = JSON.parse(savedPosition);
             currentX = positionData.x || 0;
             currentY = positionData.y || 0;
+            currentScale = positionData.scale || 1;
             
-            // Apply saved position to player image
+            // Apply saved position and scale to player image
             if (playerImg) {
-                playerImg.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                playerImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
+            }
+            
+            // Update scale slider if available
+            if (scaleSlider) {
+                scaleSlider.value = Math.round(currentScale * 100);
+                updateScaleDisplay();
             }
         } catch (e) {
             console.error('Error loading saved position:', e);
@@ -617,8 +822,9 @@ function loadPosition() {
         // No saved position for this player, reset to default
         currentX = 0;
         currentY = 0;
+        currentScale = 1;
         if (playerImg) {
-            playerImg.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            playerImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
         }
     }
 }
@@ -677,14 +883,23 @@ function loadPlayerCard() {
             </div>
             <div class="photo">
                 <img src="${photoSrc}" alt="${player.name}" onerror="this.src='unin.jpg'">
-           
             </div>
             <div class="name">${player.name}</div>
-  <div class="hos"> <img src="hos.png"></img> </div>
+            <div class="hos"> <img src="hos.png"></img> </div>
         </div>
     `;
     
     cardContainer.innerHTML = cardHTML;
+    
+    // Get scale controls elements
+    scaleSlider = document.getElementById('scaleSlider');
+    scaleValue = document.getElementById('scaleValue');
+    scalePercent = document.getElementById('scalePercent');
+    
+    // Add event listener for scale slider
+    if (scaleSlider) {
+        scaleSlider.addEventListener('input', updateScale);
+    }
     
     // Add drag and drop event listeners after card is created
     setTimeout(() => {
@@ -693,7 +908,7 @@ function loadPlayerCard() {
             playerImg.addEventListener('mousedown', startDrag);
             playerImg.addEventListener('touchstart', startDrag, { passive: false });
             
-            // Load saved position for this specific player
+            // Load saved position and scale for this specific player
             loadPosition();
         }
     }, 100);
@@ -704,6 +919,7 @@ document.addEventListener('DOMContentLoaded', loadPlayerCard);
 
 // Add event listeners for buttons
 changePositionBtn.addEventListener('click', toggleDragMode);
+scaleImageBtn.addEventListener('click', toggleScaleMode);
 saveBtn.addEventListener('click', savePosition);
 resetBtn.addEventListener('click', resetPosition);
 
@@ -711,6 +927,15 @@ resetBtn.addEventListener('click', resetPosition);
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape' || event.key === 'Backspace') {
         goBack();
+    }
+});
+
+// Close scale controls when clicking outside
+document.addEventListener('click', function(event) {
+    if (scaleEnabled && 
+        !scaleControls.contains(event.target) && 
+        !scaleImageBtn.contains(event.target)) {
+        toggleScaleMode();
     }
 });
 </script>
