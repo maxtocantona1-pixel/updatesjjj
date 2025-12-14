@@ -13,6 +13,10 @@
   --text:#ffffff;
 }
 *{box-sizing:border-box}
+  @font-face {
+    font-family: "MyFont";
+    src: url("myfont.ttf");
+}
 body{
   margin:0;
   padding:0;
@@ -310,11 +314,11 @@ body{
 
 .epic-card .rating{ 
   font-weight:900; 
-  font-size:60px; 
-  transform: scale(1.2);
   position: absolute;
-  top: -20px;
-  animation: glow 3s infinite alternate;
+  font-family: "MyFont", sans-serif;
+  top: -40px;
+  letter-spacing: 3px;
+  animation: glow 2s infinite alternate;
 }
 
 .epic-card .pos{ 
@@ -322,8 +326,8 @@ body{
   font-size:32px; 
   color: white; 
   position: absolute;
-  top: 40px;
-  left: 6px;
+  top: 50px;
+  left: 20px;
   scale: 1.4;
 }
 
@@ -334,8 +338,8 @@ body{
   border-radius:20%; 
   background:transparent; 
   position: absolute;
-  top: 80px;
-  left: 5px;
+  top: 90px;
+  left: 10px;
   scale: 1.2;
 }
 
@@ -428,7 +432,8 @@ body{
   }
   
   .epic-card .rating{ 
-    font-size:48px; 
+    font-size:68px; 
+    font-weight: 900;
   }
   
   .epic-card .pos{ 
@@ -464,8 +469,8 @@ body{
   }
 }
   @keyframes glow{
-    from{color: white;}
-    to{color: #d4af37;}
+    from{color: #fff;}
+    to{color: yellow;}
     
   }
 </style>
