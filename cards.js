@@ -3,14 +3,14 @@ let helid = localStorage.getItem("unk1");
 let mainPlayers = JSON.parse(localStorage.getItem('customPlayers') || '[]');
 if (mainPlayers.length === 0) {
   mainPlayers = [
-    { name:"Paul Scholes", position:"CMF", overall:106, photo:"scholes.jpg", bg:"epic.jpg", skills:["Phenomenal Pass"], team:"manutd.png" },
-    { name:"Cristiano Ronaldo", position:"CF", overall:108, photo:"ronaldo.jpg", bg:"epic.jpg", skills:["Momentum Dribbling"], team:"manutd.png" },
-    { name:"David Beckham", position:"RMF", overall:105, photo:"becham.jpg", bg:"epic.jpg", skills:["Edged Crossing"], team:"manutd.png" },
-    { name:"EricCantona", position:"CF", overall:105, photo:"cantona.jpg", bg:"epic.jpg", skills:["Phenomenal Finishing"], team:"manutd.png" },
-    { name:"Roy Keane", position:"DMF", overall:106, photo:"keane.jpg", bg:"epic.jpg", skills:["Fortress"], team:"manutd.png"},
-    { name:"Neman̈ja Vidic", position:"CB", overall:107, photo:"vidic.jpg", bg:"epic.jpg", skills:["Long Reach Tackle"], team:"manutd.png"},
-    { name:"Wayne Rooney", position:"CF", overall:107, photo:"rooney.jpg", bg:"epic.jpg", skills:["Phenomenal Finishing"], team:"manutd.png"},
-    { name:"Ryan Giggs", position:"LMF", overall:106, photo:"giggs.jpg", bg:"epic.jpg", skills:["Visionary Pass"], team:"manutd.png"},
+    { name:"Marco Van Basten", position:"CF", overall:105, photo:"vanbas.jpg", bg:"epic.jpg", skills:["Phenomenal Finishing"], team:"acmilan.png" },
+    { name:"Andriy Shevshenko", position:"CF", overall:106, photo:"sheva.jpg", bg:"epic.jpg", skills:["Phenomenal Finishing "], team:"acmilan.png" },
+  { name:"Eric Cantona", position:"CF", overall:106, photo:"cantona.jpg", bg:"epic.jpg", skills:["Phenomenal Finishing"], team:"manutd.png" },
+  { name:"Nemanja Vidic", position:"CB", overall:108, photo:"vidic.jpg", bg:"epic.jpg", skills:["Long Reach Tackle","Wall Power"], team:"manutd.png"},
+    { name:"Robert Lewandowski", position:"CF", overall:106, photo:"lewan.jpg", bg:"epic.jpg", skills:["Phenomenal Finishing"], team:"bayern.png"},
+    { name:"Karl-Heinz Rummenigge", position:"CF", overall:105, photo:"rummi.jpg", bg:"epic.jpg", skills:["Phenomenal Finishing"], team:"bayern.png" },
+    { name:"Carles Puyol", position:"CB", overall:105, photo:"puyol.jpg", bg:"epic.jpg", skills:["Long Reach Tackle"], team:"barca.png"},
+   { name:"Rivaldo", position:"AMF", overall:106, photo:"rivaldo.jpg", bg:"epic.jpg", skills:["Phenomenal Pass"], team:"barca.png"},
   ];
   localStorage.setItem('customPlayers', JSON.stringify(mainPlayers));
 }
@@ -45,7 +45,9 @@ const availableSkills = [
   "Long Reach Tackle",
   "Momentum Dribbling",
   "Mr Save",
-  "Aerial Fort"
+  "Aerial Fort",
+"Low Screamer",
+"Wall Power"
 ];
 
 // Use only mainPlayers since unknownPlayers has been removed
