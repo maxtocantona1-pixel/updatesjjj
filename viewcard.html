@@ -20,7 +20,6 @@
 body{
   margin:0;
   padding:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
   background:#000;
   color:var(--text);
   min-height:100vh;
@@ -280,22 +279,22 @@ body{
   z-index:1; 
   transition: all 0.3s ease;
   transform-origin: center center;
-  filter:brightness(1) contrast(1.1) saturate(1.2) drop-shadow(0 6px 12px rgba(0,0,0,.5)); 
+  filter:brightness(0.9) contrast(1.1) saturate(1.2) drop-shadow(0 6px 12px rgba(0,0,0,.5)); 
 }
 
 .epic-card .photo img.drag-enabled  {
   cursor: move;
   user-select: none;
   touch-action: none;
-  border: 2px dashed #11ff66;
-  box-shadow: 0 0 15px #11ff66;
-  z-index: 3;
+  border: 2px dashed #0ef;
+  box-shadow: 0 0 55px #0ef;
+  z-index: 5;
 }
 
 .epic-card .photo img.scale-enabled  {
   cursor: default;
-  border: 2px dashed #ffaa11;
-  box-shadow: 0 0 15px #ffaa11;
+  border: 2px dashed #0ef;
+  box-shadow: 0 0 55px #0ef;
   z-index: 3;
 }
 
@@ -313,11 +312,9 @@ body{
 }
 
 .epic-card .rating{ 
-  font-weight:900; 
   position: absolute;
-  font-family: "MyFont", sans-serif;
+  font-family: "MyFont";
   top: -40px;
-  letter-spacing: 3px;
   animation: glow 2s infinite alternate;
 }
 
@@ -432,8 +429,8 @@ body{
   }
   
   .epic-card .rating{ 
-    font-size:68px; 
-    font-weight: 900;
+    font-size:70px; 
+    font-weight: 0;
   }
   
   .epic-card .pos{ 
