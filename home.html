@@ -299,5 +299,21 @@ display: none;
 document.getElementById('shareBtn').addEventListener('click', async () => {
     location.href = "share.html";
 });
+  // 1. Dooro dhamaan badhamada bogga ku jira
+const dhamaanBadhamada = document.querySelectorAll('button');
+
+// 2. Mid mid u sii mar (Loop)
+dhamaanBadhamada.forEach(badhan => {
+    // 3. Ku dar dhageystaha gujinta (Click Event Listener)
+    badhan.addEventListener('click', () => {
+        // Hubi in interface-ka Android uu jiro ka dibna wac sound-ka
+        if (typeof Android !== "undefined" && Android.sounder) {
+            Android.sounder("click"); // "click" waa magaca file-ka res/raw ku jira
+        } else {
+            console.log("Interface-ka Android lama helin!");
+        }
+    });
+});
+
 </script>
 </html>
