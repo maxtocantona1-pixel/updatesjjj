@@ -12,7 +12,7 @@
             display: flex; flex-direction: column; align-items: center; padding: 20px;
         }
 
-        .controls { margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
+        .controls {z-index: 90; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
 
         select {
             background: #111; color: var(--neon-blue); border: 2px solid var(--neon-blue);
